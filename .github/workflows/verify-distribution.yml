@@ -1,0 +1,24 @@
+name: Check distribution repository
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  public-files-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject private application source and generated assets
+        run: |
+          python3 - <<'PYGUARD'
+          import pathlib, re, subprocess
+          allowed = {'README.md', 'LICENSE', 'PRIVACY.md', 'CHANGELOG.md', 'THIRD_PARTY_NOTICES.txt', '.gitignore'}
+          patterns = [r'assets/[^/]+\.(png|jpg)', r'releases/[^/]+\.md', r'\.github/[^/]+\.md', r'\.github/ISSUE_TEMPLATE/[^/]+\.yml', r'\.github/workflows/[^/]+\.yml']
+          tracked = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
+          rejected = [p for p in tracked if p and p not in allowed and not any(re.fullmatch(pattern, p) for pattern in patterns)]
+          assert not rejected, 'Unexpected public files: ' + repr(rejected)
+          assert not list(pathlib.Path('.').glob('**/*.swift'))
+          assert not list(pathlib.Path('.').glob('**/*.rs'))
+          print('Only approved public distribution files are tracked.')
+          PYGUARD

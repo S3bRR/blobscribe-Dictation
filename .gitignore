@@ -1,0 +1,20 @@
+# This repository distributes the app, not its private source.
+# Only reviewed public documentation, images and GitHub configuration are allowed.
+*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/PRIVACY.md
+!/CHANGELOG.md
+!/THIRD_PARTY_NOTICES.txt
+!/assets/
+!/assets/*.png
+!/assets/*.jpg
+!/.github/
+!/.github/*.md
+!/.github/ISSUE_TEMPLATE/
+!/.github/ISSUE_TEMPLATE/*.yml
+!/.github/workflows/
+!/.github/workflows/*.yml
+!/releases/
+!/releases/*.md
